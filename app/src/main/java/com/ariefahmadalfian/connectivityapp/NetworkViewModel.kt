@@ -1,19 +1,16 @@
 package com.ariefahmadalfian.connectivityapp
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.InetAddress
 
@@ -25,24 +22,23 @@ class ConnectivityViewModel(
         .isConnected
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), false)
 
-    private val _latency = MutableStateFlow<Long>(-1)
-    val latency: StateFlow<Long> = _latency.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            isConnected.collectLatest { connected ->
-                if (connected) {
-                    while (isActive && isConnected.value) {
-                        val latencyMs = getInternetLatency()
-                        _latency.value = latencyMs
-                        delay(5000)
-                    }
-                } else {
-                    _latency.value = -1
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val latency: StateFlow<Long> = isConnected.flatMapLatest { connected ->
+        if (connected) {
+            flow {
+                while (true) {
+                    emit(getInternetLatency())
+                    delay(5000)
                 }
             }
+        } else {
+            flowOf(-1L)
         }
-    }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000L),
+        -1
+    )
 
     private suspend fun getInternetLatency(): Long {
         return withContext(Dispatchers.IO) {
