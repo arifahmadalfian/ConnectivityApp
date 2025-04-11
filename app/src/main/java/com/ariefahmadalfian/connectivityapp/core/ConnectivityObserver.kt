@@ -1,4 +1,4 @@
-package com.ariefahmadalfian.connectivityapp
+package com.ariefahmadalfian.connectivityapp.core
 
 import android.content.Context
 import android.net.ConnectivityManager
