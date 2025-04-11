@@ -1,9 +1,7 @@
 # 🌐 Koneksi Status Monitor
 
 Aplikasi Android menggunakan **Jetpack Compose** untuk memantau status dan kualitas koneksi internet secara real-time.  
-Terinspirasi dari indikator jaringan pada aplikasi **m-Banking BCA**, aplikasi ini menampilkan status koneksi dengan warna berbeda berdasarkan kecepatan respon (latency) ke server.
-
-![status-demo](https://user-images.githubusercontent.com/your-username/demo-status.gif) <!-- (Opsional: ganti dengan screenshot/rekaman aplikasi) -->
+aplikasi ini menampilkan status koneksi dengan warna berbeda berdasarkan kecepatan respon (latency) ke server.
 
 ---
 
@@ -29,11 +27,5 @@ Terinspirasi dari indikator jaringan pada aplikasi **m-Banking BCA**, aplikasi i
 - ConnectivityManager (Android NetworkCallback)
 - Clean Architecture
 
----
 
-## 📦 Instalasi & Build
 
-1. Clone repository ini:
-   ```bash
-   git clone https://github.com/username/koneksi-status-monitor.git
-   cd koneksi-status-monitor
